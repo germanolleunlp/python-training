@@ -1,8 +1,12 @@
 class Question:
 
-  def __init__(self, answer, options):
+  def __init__(self, text, answer, options = ()):
+    self.text = text
     self.answer = answer
     self.options = options
 
   def __str__(self):
-    return ', '.join(self.options)
+    return self.text
+
+  def __len__(self):
+    return len(self.options)

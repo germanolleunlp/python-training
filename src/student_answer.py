@@ -1,13 +1,15 @@
 class StudentAnswer:
-  
-  def __init__(self, student, question, answer):
+
+  def __init__(self, student, answer, question, quiz):
     self.student = student
-    self.question = question
     self.answer = answer
-  
+    self.question = question
+    self.quiz = quiz
+
   def __str__(self):
-    return '{} answer {} for question {}'.format(
+    return '{} answer {} for question {} in quiz {}'.format(
       self.student,
       self.answer,
-      self.question
+      self.question,
+      self.quiz
     )
