@@ -19,21 +19,10 @@ class Teacher:
 
     def calculate_average_of_classroom(self, classroom):
         if classroom.teacher != self:
-            raise BaseException('This teacher can not correct this classroom')
+            raise BaseException("This teacher can not correct for {}".format(classroom))
 
         assignments = [assignment for assignment in self.assignments if assignment.student in classroom.students]
         return calculate_average_grades(assignments)
 
     def calculate_global_average(self):
         return calculate_average_grades(assignments=self.assignments)
-
-    def correct_assignment(self, assignment):
-        quiz = assignment.quiz
-
-        if quiz.teacher != self:
-            raise BaseException('This teacher can not correct the quiz')
-
-        correct_answers = quiz.correct_answers_of_student(assignment.student)
-        grade = round(len(correct_answers) / len(quiz), 1) * 10
-        assignment.set_grade(grade)
-        return assignment

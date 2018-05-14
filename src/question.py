@@ -10,6 +10,3 @@ class Question:
 
     def __len__(self):
         return len(self.options)
-
-    def add_option(self, option):
-        self.options.add(option)

@@ -14,31 +14,31 @@ earl = Student(name='Earl Christensen')
 
 question_one = Question(
     text='What is the national sport in Japan?',
-    answer=1,
+    answer='Judo',
     options=('Judo', 'Baseball', 'Sumo Wrestling')
 )
 
 question_two = Question(
     text='How many minutes is a rugby match?',
-    answer=2,
+    answer=80,
     options=(70, 80, 90)
 )
 
 question_three = Question(
     text='Which car won Fernando Alonso his first tittle in Formula 1 with?',
-    answer=1,
+    answer='Renault',
     options=('Renault', 'Ford', 'Peugeot')
 )
 
 question_four = Question(
     text='In which sport can you win the Davis Cup?',
-    answer=3,
+    answer='Tennis',
     options=('Football', 'Racing', 'Tennis')
 )
 
 question_five = Question(
     text="In which year did Maradona score a goal with his hand?",
-    answer=2,
+    answer=1986,
     options=(1983, 1986, 1988)
 )
 
@@ -57,35 +57,25 @@ class TestQuiz(TestCase):
         quiz = Quiz(teacher=self.teacher, questions=questions)
         self.assertEqual(len(quiz), 5)
 
-    def test_correct_full_quiz_submitted(self):
+    def test_grade_for_full_quiz_completed(self):
         quiz = Quiz(teacher=self.teacher, questions=questions)
         assignment = self.teacher.assign(quiz, julia)
-        assignment.add_answer(Answer(student=julia, question=question_one, option=1))
-        assignment.add_answer(Answer(student=julia, question=question_two, option=1))
-        assignment.add_answer(Answer(student=julia, question=question_three, option=1))
-        assignment.add_answer(Answer(student=julia, question=question_four, option=3))
-        assignment.add_answer(Answer(student=julia, question=question_five, option=1))
-        self.teacher.correct_assignment(assignment)
+        assignment.add_answer(Answer(student=julia, question=question_one, option='Judo'))
+        assignment.add_answer(Answer(student=julia, question=question_two, option=80))
+        assignment.add_answer(Answer(student=julia, question=question_three, option='Renault'))
+        assignment.add_answer(Answer(student=julia, question=question_four, option='Tennis'))
+        assignment.add_answer(Answer(student=julia, question=question_five, option=1986))
 
-        self.assertEqual(assignment.grade, 6)
+        self.assertEqual(assignment.grade, 10)
 
-    def test_correct_partial_quiz_submitted(self):
+    def test_grade_for_partial_quiz_completed(self):
         quiz = Quiz(teacher=self.teacher, questions=questions)
         assignment = self.teacher.assign(quiz, carlee)
-        assignment.add_answer(Answer(student=carlee, question=question_one, option=1))
-        assignment.add_answer(Answer(student=carlee, question=question_two, option=2))
-        assignment.add_answer(Answer(student=carlee, question=question_three, option=1))
-        self.teacher.correct_assignment(assignment)
+        assignment.add_answer(Answer(student=carlee, question=question_one, option='Judo'))
+        assignment.add_answer(Answer(student=carlee, question=question_two, option=80))
+        assignment.add_answer(Answer(student=carlee, question=question_three, option='Renault'))
 
         self.assertEqual(assignment.grade, 6)
-
-    def test_correct_quiz_with_invalid_teacher(self):
-        quiz = Quiz(teacher=self.teacher, questions=questions)
-        selena = Teacher(name='Selena Francis')
-        with self.assertRaises(BaseException) as context:
-            selena.correct_assignment(selena.assign(quiz, carlee))
-
-        self.assertTrue('This teacher can not correct the quiz' in str(context.exception))
 
     def test_calculate_global_average(self):
         quiz_one = Quiz(teacher=self.teacher, questions=questions)
@@ -93,24 +83,21 @@ class TestQuiz(TestCase):
 
         for student in [jude, julia, carlee, earl]:
             assignment = self.teacher.assign(quiz_one, student)
-            assignment.add_answer(Answer(student=student, question=question_one, option=1))
-            assignment.add_answer(Answer(student=student, question=question_two, option=1))
-            assignment.add_answer(Answer(student=student, question=question_three, option=1))
-            assignment.add_answer(Answer(student=student, question=question_four, option=3))
-            assignment.add_answer(Answer(student=student, question=question_five, option=1))
-            self.teacher.correct_assignment(assignment)
-
+            assignment.add_answer(Answer(student=student, question=question_one, option='Judo'))
+            assignment.add_answer(Answer(student=student, question=question_two, option=80))
+            assignment.add_answer(Answer(student=student, question=question_three, option='Renault'))
+            assignment.add_answer(Answer(student=student, question=question_four, option='Tennis'))
+            assignment.add_answer(Answer(student=student, question=question_five, option=1986))
             assignment = self.teacher.assign(quiz_two, student)
-            assignment.add_answer(Answer(student=student, question=question_one, option=1))
-            assignment.add_answer(Answer(student=student, question=question_two, option=1))
-            assignment.add_answer(Answer(student=student, question=question_three, option=1))
-            self.teacher.correct_assignment(assignment)
+            assignment.add_answer(Answer(student=student, question=question_one, option='Judo'))
+            assignment.add_answer(Answer(student=student, question=question_two, option=80))
+            assignment.add_answer(Answer(student=student, question=question_three, option='Renault'))
 
         self.assertEqual(self.teacher.calculate_global_average(), {
-            'Carlee Holloway': 5.0,
-            'Earl Christensen': 5.0,
-            'Jude Arroyo': 5.0,
-            'Julia Henderson': 5.0,
+            'Carlee Holloway': 8.0,
+            'Earl Christensen': 8.0,
+            'Jude Arroyo': 8.0,
+            'Julia Henderson': 8.0,
         })
 
     def test_calculate_average_of_classroom(self):
@@ -120,27 +107,26 @@ class TestQuiz(TestCase):
 
         for student in [jude, julia, carlee, earl]:
             assignment = self.teacher.assign(quiz_one, student)
-            assignment.add_answer(Answer(student=student, question=question_one, option=1))
-            assignment.add_answer(Answer(student=student, question=question_two, option=1))
-            assignment.add_answer(Answer(student=student, question=question_three, option=1))
-            assignment.add_answer(Answer(student=student, question=question_four, option=3))
-            assignment.add_answer(Answer(student=student, question=question_five, option=1))
-            self.teacher.correct_assignment(assignment)
-
+            assignment.add_answer(Answer(student=student, question=question_one, option='Judo'))
+            assignment.add_answer(Answer(student=student, question=question_two, option=80))
+            assignment.add_answer(Answer(student=student, question=question_three, option='Renault'))
+            assignment.add_answer(Answer(student=student, question=question_four, option='Tennis'))
+            assignment.add_answer(Answer(student=student, question=question_five, option=1986))
             assignment = self.teacher.assign(quiz_two, student)
-            assignment.add_answer(Answer(student=student, question=question_one, option=1))
-            assignment.add_answer(Answer(student=student, question=question_two, option=1))
-            assignment.add_answer(Answer(student=student, question=question_three, option=1))
-            self.teacher.correct_assignment(assignment)
+            assignment.add_answer(Answer(student=student, question=question_one, option='Judo'))
+            assignment.add_answer(Answer(student=student, question=question_two, option=80))
+            assignment.add_answer(Answer(student=student, question=question_three, option='Renault'))
 
         self.assertEqual(self.teacher.calculate_average_of_classroom(classroom), {
-            'Carlee Holloway': 5.0,
-            'Jude Arroyo': 5.0,
+            'Carlee Holloway': 8.0,
+            'Jude Arroyo': 8.0,
         })
 
     def test_calculate_average_of_classroom_with_invalid_teacher(self):
         classroom = Classroom(teacher=Teacher(name='Selena Francis'))
+        classroom.add_student(julia)
+        error_message = 'This teacher can not correct for classroom of Selena Francis with 1 students'
         with self.assertRaises(BaseException) as context:
             self.teacher.calculate_average_of_classroom(classroom)
 
-        self.assertTrue('This teacher can not correct this classroom' in str(context.exception))
+        self.assertTrue(error_message in str(context.exception))
