@@ -39,8 +39,7 @@ class Teacher:
         quiz = assignment.quiz
 
         if quiz.teacher == self:
-            student = assignment.student
-            correct_answers = {answer for answer in quiz.answers_of(student) if answer.correct()}
+            correct_answers = quiz.correct_answers_of_student(assignment.student)
             grade = round(len(correct_answers) / len(quiz), 1) * 10
             assignment.set_grade(grade)
             return assignment

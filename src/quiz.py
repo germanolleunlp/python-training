@@ -17,5 +17,5 @@ class Quiz:
     def add_answer(self, answer):
         self.answers.add(answer)
 
-    def answers_of(self, student):
-        return {answer for answer in self.answers if answer.student == student}
+    def correct_answers_of_student(self, student):
+        return {answer for answer in self.answers if answer.student == student and answer.correct()}
