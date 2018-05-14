@@ -1,10 +1,11 @@
-import unittest
+from unittest import TestCase
 
 from src.teacher import Teacher
 from src.student import Student
 from src.question import Question
 from src.quiz import Quiz
 from src.answer import Answer
+from src.classroom import Classroom
 
 jude = Student(name='Jude Arroyo')
 carlee = Student(name='Carlee Holloway')
@@ -44,10 +45,13 @@ question_five = Question(
 questions = {question_one, question_two, question_three, question_four, question_five}
 
 
-class TestQuiz(unittest.TestCase):
+class TestQuiz(TestCase):
 
     def setUp(self):
         self.teacher = Teacher(name='Leon Lang')
+
+    def tearDown(self):
+        self.teacher.assignments.clear()
 
     def test_len(self):
         quiz = Quiz(teacher=self.teacher, questions=questions)
@@ -83,7 +87,7 @@ class TestQuiz(unittest.TestCase):
 
         self.assertTrue('This teacher can not correct the quiz' in str(context.exception))
 
-    def test_calculate_grades(self):
+    def test_calculate_global_average(self):
         quiz_one = Quiz(teacher=self.teacher, questions=questions)
         quiz_two = Quiz(teacher=self.teacher, questions=questions)
 
@@ -102,13 +106,41 @@ class TestQuiz(unittest.TestCase):
             assignment.add_answer(Answer(student=student, question=question_three, option=1))
             self.teacher.correct_assignment(assignment)
 
-        self.assertEqual(self.teacher.calculate_grades(), {
+        self.assertEqual(self.teacher.calculate_global_average(), {
             'Carlee Holloway': 5.0,
             'Earl Christensen': 5.0,
             'Jude Arroyo': 5.0,
             'Julia Henderson': 5.0,
         })
 
+    def test_calculate_average_of_classroom(self):
+        classroom = Classroom(teacher=self.teacher, students={jude, carlee})
+        quiz_one = Quiz(teacher=self.teacher, questions=questions)
+        quiz_two = Quiz(teacher=self.teacher, questions=questions)
 
-if __name__ == '__main__':
-    unittest.main()
+        for student in [jude, julia, carlee, earl]:
+            assignment = self.teacher.assign(quiz_one, student)
+            assignment.add_answer(Answer(student=student, question=question_one, option=1))
+            assignment.add_answer(Answer(student=student, question=question_two, option=1))
+            assignment.add_answer(Answer(student=student, question=question_three, option=1))
+            assignment.add_answer(Answer(student=student, question=question_four, option=3))
+            assignment.add_answer(Answer(student=student, question=question_five, option=1))
+            self.teacher.correct_assignment(assignment)
+
+            assignment = self.teacher.assign(quiz_two, student)
+            assignment.add_answer(Answer(student=student, question=question_one, option=1))
+            assignment.add_answer(Answer(student=student, question=question_two, option=1))
+            assignment.add_answer(Answer(student=student, question=question_three, option=1))
+            self.teacher.correct_assignment(assignment)
+
+        self.assertEqual(self.teacher.calculate_average_of_classroom(classroom), {
+            'Carlee Holloway': 5.0,
+            'Jude Arroyo': 5.0,
+        })
+
+    def test_calculate_average_of_classroom_with_invalid_teacher(self):
+        classroom = Classroom(teacher=Teacher(name='Selena Francis'))
+        with self.assertRaises(BaseException) as context:
+            self.teacher.calculate_average_of_classroom(classroom)
+
+        self.assertTrue('This teacher can not correct this classroom' in str(context.exception))
