@@ -1,8 +1,8 @@
 class Classroom:
 
-    def __init__(self, teacher, students=set()):
+    def __init__(self, teacher):
         self.teacher = teacher
-        self.students = students
+        self.students = set()
 
     def __str__(self):
         return "classroom of {} with {} students".format(self.teacher, len(self))

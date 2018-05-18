@@ -12,17 +12,19 @@ class Teacher:
         return self.name
 
     def assign(self, quiz, student):
-        assignment = Assignment(quiz=quiz, student=student)
+        assignment = Assignment(self, student, quiz)
+        student.add_assignment(assignment)
         self.assignments.add(assignment)
-
         return assignment
 
     def calculate_average_of_classroom(self, classroom):
         if classroom.teacher != self:
             raise BaseException("This teacher can not correct for {}".format(classroom))
 
-        assignments = [assignment for assignment in self.assignments if assignment.student in classroom.students]
-        return calculate_average_grades(assignments)
+        return (self._average_grade_for_student(student) for student in classroom.students)
 
     def calculate_global_average(self):
-        return calculate_average_grades(assignments=self.assignments)
+        return calculate_average_grades(self.assignments)
+
+    def _average_grade_for_student(self, student):
+        return calculate_average_grades(student.assignments_of_teacher(self))

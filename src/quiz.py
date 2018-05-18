@@ -1,21 +1,13 @@
 class Quiz:
 
-    def __init__(self, teacher, questions):
-        self.teacher = teacher
-        self.questions = questions
-        self.answers = set()
+    def __init__(self):
+        self.questions = set()
 
     def __str__(self):
-        return "{}'s quiz".format(self.teacher)
+        return "Quiz with {} questions".format(len(self))
 
     def __len__(self):
         return len(self.questions)
 
     def add_question(self, question):
         self.questions.add(question)
-
-    def add_answer(self, answer):
-        self.answers.add(answer)
-
-    def correct_answers_of_student(self, student):
-        return {answer for answer in self.answers if answer.student == student and answer.correct()}
